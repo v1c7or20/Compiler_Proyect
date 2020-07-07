@@ -34,8 +34,6 @@ word [a-zA-Z]+
 "]"             { return RIGHT_BRACKET; }
 "{"             { return LEFT_CURLY_BRACKET; }
 "}"             { return RIGHT_CURLY_BRACKET; }
-"/*"            { return START_COMMENT; }
-"*/"            { return END_COMMENT; }
 {number}        {yylval = atoi(yytext); return NUMBER;}
 {word}          {yylval = yytext; return IDENTIFIER;}
 [\n]            { return EOL; }
