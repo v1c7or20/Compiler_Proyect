@@ -11,7 +11,8 @@ int linenum = 0;
 %}
 
 %union {
-    int iValue;                
+    int iValue;
+	            
 };
 
 %token <iValue> NUMBER 
