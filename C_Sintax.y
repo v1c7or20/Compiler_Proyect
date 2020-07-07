@@ -10,23 +10,36 @@ extern void yyterminate();
 int linenum = 0;
 %}
 
-%token NUMERO 
+%token NUMBER 
 %token MUL ADD SUB  L_BRACKET R_BRACKET EOL
 %%
-program:  |
-		program command			;
 
-command: EOL { printf("Please enter a calculation:\n"); }
-		|exp EOL {printf("%d\n", $1); linenum++;}
+program:            declaration_list			;
+
+declaration_list:   declaration_list declaration
+                |   declaration               
+                    ;
+declaration:        var_declaration
+                |   fun_declaration
         ;
-exp:    exp ADD term { $$ = $1 + $3; } |
-        exp SUB term { $$ = $1 - $3; } | 
-        term { $$ = $1; }
+var_declaration:    type_specifier IDENTIFIER END_SENTENCE
+                |   type_specifier IDENTIFIER RIGHT_BRACKET NUMBER LEFT_BRACKET END_SENTENCE
         ;
-term:   term MUL factor { $$ = $1 * $3; }| factor {$$ = $1;}
+type_specifier:     INT_IDENTIFIER
+                |   VOID_IDENTIFIER
         ;
-factor: L_BRACKET exp R_BRACKET { $$ = $2; } | NUMERO { $$ = $1; }
+fun_declaration:    type_specifier IDENTIFIER RIGHT_PARENTHESIS params LEFT_PARENTHESIS compound_stmt
         ;
+params:             params_list
+                |   VOID_IDENTIFIER
+        ;
+params_list:        params_list COLON param 
+                |   param
+        ;
+param:              type_specifier IDENTIFIER
+                |   type_specifier IDENTIFIER RIGHT_BRACKET LEFT_BRACKET
+        ;
+compound_stmt:      
 
 %%
 

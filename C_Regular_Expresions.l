@@ -14,6 +14,7 @@ word [a-zA-Z]+
 "int"           { return INT_IDENTIFIER;}
 "void"          { return VOID_IDENTIDIER;}
 "while"         { return WHILE_CLAUSE;}
+"return"        { return RETURN;}
 "+"             { return ADD; }
 "-"             { return SUB; }
 "*"             { return MUL; }
@@ -36,7 +37,7 @@ word [a-zA-Z]+
 "/*"            { return START_COMMENT; }
 "*/"            { return END_COMMENT; }
 {number}        {yylval = atoi(yytext); return NUMBER;}
-{word}          {yylval = yytext; return WORD;}
+{word}          {yylval = yytext; return IDENTIFIER;}
 [\n]            { return EOL; }
 [ \t]                ;
 .       ;
