@@ -30,3 +30,5 @@ typedef struct
     row rows_simbol [200];
 
 }table;
+
+

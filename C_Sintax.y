@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include "structures.h"
 
+table symbol_table;
 extern FILE* yyin;
 extern int yylex(void);
 extern void yyterminate();
@@ -27,62 +29,67 @@ int linenum = 0;
 
 program:            declaration_list
 					{
-
+						
 					}
 		;
 
 declaration_list:   declaration_list declaration
 					{
-
+						$$ = newBranch();
+						$$->leaves[0] = $1;
+						$$->leaves[1] = $2;
 					}
                 |   declaration
 					{
-
+						$$ = newLeave();
+						$$->leaves = $1;
 					}        
                     ;
 declaration:        var_declaration
                     {
-
+						add_var(symbol_table, $1);
+						add_data($$,$1);
                     }
                 |   fun_declaration
                     {
-
+						add_fun(symbol_table, $1);
+						add_data($$,$1);
                     }
         ;
 var_declaration:    type_specifier IDENTIFIER END_SENTENCE
                     {
-
+						create_var_dec($1,$2,$$);
                     }
                 |   type_specifier IDENTIFIER RIGHT_BRACKET NUMBER LEFT_BRACKET END_SENTENCE
                     {
-
+						create_var_array_dec($1,$2,$4,$$);
                     }
                 |   error END_SENTENCE
                     {
-
+						printf("error en al declaracion de variable:");
                     }
         ;
 type_specifier:     INT_IDENTIFIER
 					{
-
+						$$ = $1;
 					}
                 |   VOID_IDENTIFIER
 					{
-
+						$$ = $1;
 					}
         ;
 fun_declaration:    type_specifier IDENTIFIER RIGHT_PARENTHESIS params LEFT_PARENTHESIS compound_stmt
 					{
-
+						create_fun_dec($1,$2,$4);
 					}
         ;
 params:             params_list
 					{
-
+						
 					}
                 |   VOID_IDENTIFIER
 					{
-
+						
 					}
         ;
 params_list:        params_list COLON param
@@ -289,7 +296,7 @@ factor:             LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
 					}
                 |   NUMBER
 					{
-
+						$$->
 					}
         ;
 call:               IDENTIFIER LEFT_PARENTHESIS args RIGHT_PARENTHESIS
