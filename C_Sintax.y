@@ -35,34 +35,34 @@ program:            declaration_list
 
 declaration_list:   declaration_list declaration
 					{
-						$$ = newBranch();
+						$$ = newBranch();					//create the nodes to start, $$ is root
 						$$->leaves[0] = $1;
-						$$->leaves[1] = $2;
+						$$->leaves[1] = $2;		
 					}
                 |   declaration
 					{
-						$$ = newLeave();
+						$$ = newLeave();					//last declaration of a leave
 						$$->leaves = $1;
 					}        
                     ;
 declaration:        var_declaration
                     {
-						add_var(symbol_table, $1);
-						add_data($$,$1);
+						add_var(symbol_table, $1);			//add to the symbol_table the variable
+						add_data($$,$1);					//add the data to the node declaration
                     }
                 |   fun_declaration
                     {
-						add_fun(symbol_table, $1);
-						add_data($$,$1);
+						add_fun(symbol_table, $1);			//add to the symbol_table the funtion
+						add_data($$,$1);					//add data to the node declaration
                     }
         ;
 var_declaration:    type_specifier IDENTIFIER END_SENTENCE
                     {
-						create_var_dec($1,$2,$$);
+						create_var_dec($1,$2,$$);			//create a struture to use this data in var_declaration
                     }
                 |   type_specifier IDENTIFIER RIGHT_BRACKET NUMBER LEFT_BRACKET END_SENTENCE
                     {
-						create_var_array_dec($1,$2,$4,$$);
+						create_var_array_dec($1,$2,$4,$$);	//create struture with the number in the array
                     }
                 |   error END_SENTENCE
                     {
@@ -71,7 +71,7 @@ var_declaration:    type_specifier IDENTIFIER END_SENTENCE
         ;
 type_specifier:     INT_IDENTIFIER
 					{
-						$$ = $1;
+						$$ = $1;							//copy or points to the data of the identifier, can be change for strncpy
 					}
                 |   VOID_IDENTIFIER
 					{
@@ -80,30 +80,30 @@ type_specifier:     INT_IDENTIFIER
         ;
 fun_declaration:    type_specifier IDENTIFIER RIGHT_PARENTHESIS params LEFT_PARENTHESIS compound_stmt
 					{
-						create_fun_dec($1,$2,$4);
+						create_fun_dec($1,$2,$4,$$);		//create data struture of the funtion to pass the data
 					}
         ;
 params:             params_list
 					{
-						
+						$$ = $1;							//$$ and $1 must be char ** in order to have an array of strings of parameters
 					}
                 |   VOID_IDENTIFIER
 					{
-						
+						$$ = NULL;							//if void, $$ is NULL, must control this case in the creation of params in create_fun_dec
 					}
         ;
 params_list:        params_list COLON param
 					{
-
+						add_param($1,$3,$$);				//adds to $$ the parameters of the other two
 					}
                 |   param
 					{
-
+						add_last_param($1, $$);				//add the last parameter, careful in initialization
 					}
         ;
 param:              type_specifier IDENTIFIER
 					{
-
+						
 					}
                 |   type_specifier IDENTIFIER RIGHT_BRACKET LEFT_BRACKET
 					{
