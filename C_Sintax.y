@@ -81,7 +81,6 @@ type_specifier:     INT_IDENTIFIER
 fun_declaration:    type_specifier IDENTIFIER RIGHT_PARENTHESIS params LEFT_PARENTHESIS compound_stmt
 					{
 						create_fun_dec($1,$2,$4,$$);		//create data struture of the funtion to pass the data
-						make_code($6,$$);
 					}
         ;
 params:             params_list
@@ -104,11 +103,11 @@ params_list:        params_list COLON param
         ;
 param:              type_specifier IDENTIFIER
 					{
-						create_param($1,$2,$$);				//create a struture to save data to pass
+						create_param($1,$2,false,$$);				//create a struture to save data to pass
 					}
                 |   type_specifier IDENTIFIER RIGHT_BRACKET LEFT_BRACKET
 					{
-						create_param_array($1,$2,$$);		//same as above but a bool arrya must be activated
+						create_param($1,$2,true,$$);				//create a struture to save data to pass
 					}
         ;
 compound_stmt:      LEFT_CURLY_BRACKET local_declarations statement_list RIGHT_CURLY_BRACKETS
@@ -188,7 +187,7 @@ return_stmt:        RETURN END_SENTENCE
 					}
                 |   RETURN expression END_SENTENCE
 					{
-						return_expr($2.$3);
+						return_expr($2.$$);
 					}
                 |   error END_SENTENCE
 					{
@@ -219,7 +218,7 @@ simple_expression:  additive_expression relop additive_expression
 					}
                 |   additive_expression
 					{
-						simple_add($1,$2);
+						simple_add($1,$$);
 					}
         ;
 relop:              LESS_OR_EQUAL
