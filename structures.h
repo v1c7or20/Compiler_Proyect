@@ -6,18 +6,18 @@
 
 typedef struct 
 {
-    char * local_identifier;
-    char * type;
+    char * local_identifier = NULL;
+    char * type = NULL;
     bool isarray = false;
     parameter * next_param = NULL;
 }parameter;
 
 typedef struct 
 {
-    char * identifier;
-    char * type;
-    bool is_funtion;
-    parameter * fun_parameters;
+    char * identifier = NULL;
+    char * type = NULL;
+    bool is_funtion = NULL;
+    parameter * fun_parameters = NULL;
     int array_size;
     table * inside = NULL;
 }row;
@@ -31,15 +31,21 @@ typedef struct
 
 typedef struct 
 {
-    char * identifier;
-    char * type;
+    char * identifier = NULL;
+    char * type = NULL;
     int size;
     var_list * next = NULL;
 } var_list;
 
 typedef struct 
 {
-    /* data */
+    char * identifier = NULL;
+    expression * var_exp = NULL;
+    bool is_array = false; 
+    expression * assinged = NULL;
+    expression * operators = NULL;
+    char * relop = NULL;
+    char types;
 }expression;
 
 
@@ -49,31 +55,37 @@ typedef struct
     statement * else_stmt = NULL;
     expression * expr = NULL;
     char types;
-    statement * next;
+    statement * next = NULL;
 }statement;
 
 typedef struct
 {
-    statement * begin;
-    var_list * inside;
+    statement * begin = NULL;
+    var_list * inside = NULL;
 } compound;
 
 typedef struct 
 {
-    char * types;
-    char * identifier;
-    parameter * param;
-    compound * comp;
+    char * types = NULL;
+    char * identifier = NULL;
+    parameter * param = NULL;
+    compound * comp = NULL;
 }funtion_dec;
 
 typedef struct 
 {
     bool is_funtion;
-    var_list * variable;
-    funtion_dec * function;
-    declaration_str * next_node;    
+    var_list * variable = NULL;
+    funtion_dec * function = NULL;
+    declaration_str * next_node = NULL;    
 }declaration_str;
 
+typedef struct
+{
+    char * identifier = NULL;
+    bool is_array = false;
+    expression * expr;
+}var_pass;
 
 
 void add_arg_exp(expr_str struct_data, arg_str arguments )
@@ -134,37 +146,51 @@ void addi_exp_term(term term, addi_exp exp)
 
 void addi_exp_op(addi_exp exp_make, char * op, term term, addi_exp exp)
 {
-
+    
 }
 
-void simple_add(addi_exp exp, simple_exp s_exp)
+void simple_add(expression * exp, expression * s_exp)
 {
-
+    s_exp->operators = (expression *)malloc(sizeof(expression)=;
+    s_exp->operators[0] = exp;
+    s_exp->types = 'C';
 }
 
-void simple_add_two_exp(addi_exp exp, char op, addi_exp exp2, simple_exp s_exp)
+void simple_add_comp_exp(expression * exp, char * relop, expression * exp2, expression * s_exp)
 {
-
+    s_exp->operators = (expression *)malloc(sizeof(expression)*2);
+    s_exp->operators[0] = exp;
+    s_exp->operators[1] = exp2;
+    s_exp->relop = relop;
+    s_exp->types = 'C';
 }
 
-void make_var_array(char * identifier, expr_str  expression, var var)
+void make_var_array(char * identifier, expression * expr, var_pass * var)
 {
-
+    make_char(64, identifier, var->identifier);
+    var->expr = expr;
+    var->is_array = true;
 }
 
-void make_var(char * identifier, var var)
+void make_var(char * identifier, var_pass * var)
 {
-
+    var->is_array = false;
+    make_char(64, identifier, var->identifier);
+    
 }
 
-void expr_simple(simple_exp  s_exp, expr_str expression)
+void expr_simple(expression *  s_exp, expression * expr)
 {
-
+    expr = s_exp;
 }
 
-void expr_var_exp(var var, expr_str expression, expr_str expression_final)
+void expr_var_exp(var_pass * var, expression * expre, expression * expression_final)
 {
-
+    expression_final->identifier = var->identifier;
+    expression_final->var_exp = var->expr;
+    expression_final->is_array = var->is_array;
+    expression_final->assinged = expre;
+    expression_final->types = 'V';
 }
 
 void return_expr(expression * expression, statement * return_st)

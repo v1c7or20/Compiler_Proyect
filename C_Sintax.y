@@ -215,7 +215,7 @@ var:                IDENTIFIER
         ;
 simple_expression:  additive_expression relop additive_expression
 					{
-						simple_add_two_exp($1,$2,$3,$$);
+						simple_comp_two_exp($1,$2,$3,$$);
 					}
                 |   additive_expression
 					{
