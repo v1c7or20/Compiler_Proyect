@@ -144,14 +144,14 @@ void addi_exp_term(term term, addi_exp exp)
 
 }
 
-void addi_exp_op(addi_exp exp_make, char * op, term term, addi_exp exp)
+void addi_exp_op(addi_exp exp_make, char * op, term term, expression exp)
 {
-    
+
 }
 
 void simple_add(expression * exp, expression * s_exp)
 {
-    s_exp->operators = (expression *)malloc(sizeof(expression)=;
+    s_exp->operators = (expression *)malloc(sizeof(expression));
     s_exp->operators[0] = exp;
     s_exp->types = 'C';
 }
