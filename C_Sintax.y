@@ -35,25 +35,25 @@ program:            declaration_list
 
 declaration_list:   declaration_list declaration
 					{
-						$$ = newBranch();					//create the nodes to start, $$ is root
+						new_branch($$,2);					//create the nodes to start, $$ is root
 						$$->leaves[0] = $1;
 						$$->leaves[1] = $2;		
 					}
                 |   declaration
 					{
-						$$ = newLeave();					//last declaration of a leave
-						$$->leaves = $1;
+						new_branch($$,1)					//last declaration of a leave
+						$$->leaves[0] = $1;
 					}        
                     ;
 declaration:        var_declaration
                     {
 						add_var(symbol_table, $1);			//add to the symbol_table the variable
-						add_data($$,$1);					//add the data to the node declaration
+						add_data_var($1,$$);					//add the data to the node declaration
                     }
                 |   fun_declaration
                     {
 						add_fun(symbol_table, $1);			//add to the symbol_table the funtion
-						add_data($$,$1);					//add data to the node declaration
+						add_data_fun($1,$$);					//add data to the node declaration
                     }
         ;
 var_declaration:    type_specifier IDENTIFIER END_SENTENCE
@@ -71,16 +71,17 @@ var_declaration:    type_specifier IDENTIFIER END_SENTENCE
         ;
 type_specifier:     INT_IDENTIFIER
 					{
-						$$ = $1;							//copy or points to the data of the identifier, can be change for strncpy
+						make_char(4,"int",$$);							//copy or points to the data of the identifier, can be change for strncpy
 					}
                 |   VOID_IDENTIFIER
 					{
-						$$ = $1;
+						make_char(6,"void",$$);
 					}
         ;
 fun_declaration:    type_specifier IDENTIFIER RIGHT_PARENTHESIS params LEFT_PARENTHESIS compound_stmt
 					{
-						create_fun_dec($1,$2,$4,$$);		//create data struture of the funtion to pass the data
+						create_fun_dec($1,$2,$4,$6,$$);		//create data struture of the funtion to pass the data
+						//funcion for data compond_stmt
 					}
         ;
 params:             params_list
@@ -119,18 +120,18 @@ local_declarations: local_declarations var_declaration
 					{
 						make_local_declaration($1,$2,$$);
 					}
-                |   EMPTY
+                |   
 					{
-
+						last_var_dec($$);
 					}
         ;
 statement_list:     statement_list statement
 					{
 						make_statement_list($1,$2,$$);
 					}
-                |   EMPTY
+                |   
 					{
-
+						make_last_statement($$);
 					}
         ;
 statement:          expression_stmt
@@ -308,7 +309,7 @@ args:               arg_list
                     {
 						add_arg($1,$$);
                     }
-                |   EMPTY
+                |   
                     {
 						;
                     }
